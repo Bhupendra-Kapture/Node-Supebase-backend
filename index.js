@@ -2,6 +2,9 @@ import express from "express";
 import dotenv from "dotenv";
 import multer from "multer";
 import { createClient } from "@supabase/supabase-js";
+import ticketCommentRoutes from "./routes/ticketCommentRoutes.js";
+
+
 
 dotenv.config();
 const app = express();
@@ -22,7 +25,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 // ====================================================
 app.get("/issues", async (req, res) => {
     const { data, error } = await supabase
-        .from("issues")
+        .from("tickets")
         .select("*")
         .order("created_at", { ascending: false });
 
@@ -83,7 +86,7 @@ app.post("/issues", upload.single("attachment"), async (req, res) => {
 
         // Insert full record into Supabase DB
         const { data, error } = await supabase
-            .from("issues")
+            .from("tickets")
             .insert([
                 {
                     customer_name,
@@ -111,6 +114,12 @@ app.post("/issues", upload.single("attachment"), async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+
+
+
+// comments
+
+app.use("/api", ticketCommentRoutes);
 
 
 // ====================================================
