@@ -68,5 +68,5 @@ app.post("/issues", async (req, res) => {
 });
   
 app.listen(process.env.PORT, () => {
-  console.log("API runningasdasd on port " + process.env.PORT);
+  console.log("API on port " + process.env.PORT);
 });
