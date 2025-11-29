@@ -5,6 +5,8 @@ import { createClient } from "@supabase/supabase-js";
 
 import ticketRoutes from "./routes/ticketRoutes.js";
 import ticketCommentRoutes from "./routes/ticketCommentRoutes.js";
+import googleRoutes from "./routes/googleRoutes.js";
+
 
 dotenv.config();
 
@@ -29,6 +31,14 @@ app.use("/api", ticketRoutes);
 // COMMENT ROUTES
 // ===============================================
 app.use("/api", ticketCommentRoutes);
+
+
+// ===============================================
+// google ROUTES
+// ===============================================
+
+app.use("/api", googleRoutes);
+
 
 // Start server
 app.listen(process.env.PORT || 3000, () => {
