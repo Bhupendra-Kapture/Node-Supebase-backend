@@ -62,3 +62,72 @@ export const getTicketComments = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
+
+
+// ----------------------------------------------------
+// DELETE COMMENT BY ID
+// ----------------------------------------------------
+export const deleteTicketComment = async (req, res) => {
+    try {
+        const { commentId } = req.params;
+
+        const { error } = await supabase
+            .from("ticket_comments")
+            .delete()
+            .eq("id", commentId);
+
+        if (error) {
+            return res.status(400).json({ error: error.message });
+        }
+
+        res.json({
+            success: true,
+            message: "Comment deleted successfully"
+        });
+
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+
+// ----------------------------------------------------
+// UPDATE COMMENT BY ID
+// ----------------------------------------------------
+export const updateTicketComment = async (req, res) => {
+    try {
+        const { commentId } = req.params;
+        const { person_name, category, message } = req.body;
+
+        // Validate
+        if (!person_name && !category && !message) {
+            return res.status(400).json({
+                error: "At least one field (person_name, category, message) is required"
+            });
+        }
+
+        const updatePayload = {};
+        if (person_name) updatePayload.person_name = person_name;
+        if (category) updatePayload.category = category;
+        if (message) updatePayload.message = message;
+
+        const { data, error } = await supabase
+            .from("ticket_comments")
+            .update(updatePayload)
+            .eq("id", commentId)
+            .select();
+
+        if (error) {
+            return res.status(400).json({ error: error.message });
+        }
+
+        res.json({
+            success: true,
+            message: "Comment updated successfully",
+            data: data[0]
+        });
+
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
