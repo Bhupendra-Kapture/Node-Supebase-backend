@@ -6,7 +6,8 @@ import { createClient } from "@supabase/supabase-js";
 import ticketRoutes from "./routes/ticketRoutes.js";
 import ticketCommentRoutes from "./routes/ticketCommentRoutes.js";
 import googleRoutes from "./routes/googleRoutes.js";
-
+import bitbucketRoutes from "./routes/bitbucketRoutes.js";
+import branchRoutes from "./routes/bitBucketBranch.js";
 
 dotenv.config();
 
@@ -39,6 +40,17 @@ app.use("/api", ticketCommentRoutes);
 
 app.use("/api", googleRoutes);
 
+// ===============================================
+// bitbucket ROUTES
+// ===============================================
+
+app.use("/api", bitbucketRoutes);
+
+// ===============================================
+// branch ROUTES
+// ===============================================
+
+app.use("/api", branchRoutes);
 
 // Start server
 app.listen(process.env.PORT || 3000, () => {
