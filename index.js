@@ -10,6 +10,7 @@ import googleRoutes from "./routes/googleRoutes.js";
 import bitbucketRoutes from "./routes/bitbucketRoutes.js";
 import branchRoutes from "./routes/bitBucketBranch.js";
 import webhookRoutes from "./routes/webhookRoutes.js";
+import requirementRoute from "./routes/requirementRoute.js"
 dotenv.config();
 
 const app = express();
@@ -60,6 +61,12 @@ app.use("/api", branchRoutes);
 // ===============================================
 
 app.use("/api", webhookRoutes);
+
+// ===============================================
+// requirement ROUTES
+// ===============================================
+
+app.use("/api",requirementRoute);
 
 // Start server
 app.listen(process.env.PORT || 3000, () => {
