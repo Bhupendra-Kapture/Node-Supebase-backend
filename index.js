@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import multer from "multer";
+import cors from "cors";
 import { createClient } from "@supabase/supabase-js";
 
 import ticketRoutes from "./routes/ticketRoutes.js";
@@ -13,7 +14,8 @@ dotenv.config();
 
 const app = express();
 app.use(express.json());
-
+app.use(cors());
+app.use(express.urlencoded({ extended: true }));
 // Supabase client
 const supabase = createClient(
     process.env.SUPABASE_URL,
