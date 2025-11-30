@@ -6,7 +6,9 @@ import multer from "multer";
 import {
     getAllTickets,
     getTicketById,
-    createTicket
+    createTicket,
+     updateTicket, 
+     deleteTicket 
 } from "../controllers/ticketController.js";
 
 const router = express.Router();
@@ -22,5 +24,12 @@ router.get("/issues/:id", getTicketById);
 
 // POST create ticket
 router.post("/issues", upload.single("attachment"), createTicket);
+
+// for update
+router.put("/tickets/:id", updateTicket);
+
+// for delete
+
+router.delete("/tickets/:id", deleteTicket);
 
 export default router;

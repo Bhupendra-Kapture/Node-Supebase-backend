@@ -83,6 +83,13 @@ export const createBitbucketBranch = async (req, res) => {
       }])
       .select();
 
+      // Auto-update ticket status
+    await supabase
+    .from("tickets")
+    .update({ status: "in_progress" })
+    .eq("id", ticket_id);
+
+
     if (branchError) {
       console.error("Supabase Insert Error:", branchError.message);
       return res.status(207).json({

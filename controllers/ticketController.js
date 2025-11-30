@@ -149,3 +149,86 @@
             res.status(500).json({ error: err.message });
         }
     };
+
+
+// ===============================================
+// UPDATE TICKET
+// ===============================================
+export const updateTicket = async (req, res) => {
+  try {
+    const ticketId = req.params.id;
+
+    const {
+      customer_name,
+      server,
+      summary,
+      description,
+      category,
+      priority,
+      start_date,
+      end_date,
+      assignee,
+      reporter,
+      manager,
+      developer,
+      status
+    } = req.body;
+
+    const { data, error } = await supabase
+      .from("tickets")
+      .update({
+        customer_name,
+        server,
+        summary,
+        description,
+        category,
+        priority,
+        start_date,
+        end_date,
+        assignee,
+        reporter,
+        manager,
+        developer,
+        status,
+        updated_at: new Date().toISOString()
+      })
+      .eq("id", ticketId)
+      .select()
+      .single();
+
+    if (error) return res.status(400).json({ error: error.message });
+
+    res.json({ success: true, message: "Ticket updated", data });
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+
+// ===============================================
+// DELETE TICKET
+// ===============================================
+export const deleteTicket = async (req, res) => {
+  try {
+    const ticketId = req.params.id;
+
+    const { error } = await supabase
+      .from("tickets")
+      .delete()
+      .eq("id", ticketId);
+
+    if (error) return res.status(400).json({ error: error.message });
+
+    res.json({ success: true, message: "Ticket deleted successfully" });
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+
+
+
+    // dwvwlopwe fwatures = test causes generation, code review(fixes and plagrism)
+    // client features =  requiremt validation (does issue is clear or not ), report genration
