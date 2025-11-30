@@ -164,39 +164,66 @@ async function getCommitDiffs(workspace, repoSlug, targetBranch, bitbucketToken)
 
 // Helper: Analyze with Claude
 async function analyzeWithClaude(commits, ticketInfo) {
-  const prompt = `You are a technical project manager analyzing code changes.
+ const prompt = `You are a technical project manager analyzing code changes for a mini Jira application.
 
-## Ticket Information:
-**Summary:** ${ticketInfo.summary}
-**Description:** ${ticketInfo.description || "No description"}
-**Priority:** ${ticketInfo.priority || "Not set"}
-**Developer:** ${ticketInfo.developer || "Not assigned"}
-
-## Code Changes (${commits.length} commits):
-${commits.map(c => `
-### Commit: ${c.message}
-**Author:** ${c.author}
-**Date:** ${c.date}
-
-\`\`\`diff
-${c.diff.substring(0, 3000)}
-\`\`\`
-`).join('\n')}
-
-Analyze and provide JSON:
-{
-  "completion_percentage": 75,
-  "status": "in_progress",
-  "completed_features": ["feature 1", "feature 2"],
-  "in_progress": ["feature 3"],
-  "pending_work": ["feature 4"],
-  "code_quality": "Brief assessment",
-  "overall_assessment": "Summary",
-  "recommendations": ["rec 1", "rec 2"]
-}
-
-Status must be: "just_started", "in_progress", or "completed"`;
-
+  Your output must be divided into two perspectives:
+  
+  1) **client_view** – business-focused summary for a single-task ticket. No technical jargon. Must focus on current progress, remaining work, ETA, risks (with reasons), and decisions needed.
+  2) **developer_view** – detailed technical state, code quality assessment, blockers, and actionable recommendations.
+  
+  ## Ticket Information:
+  **Summary:** ${ticketInfo.summary}
+  **Description:** ${ticketInfo.description || "No description"}
+  **Priority:** ${ticketInfo.priority || "Not set"}
+  **Developer:** ${ticketInfo.developer || "Not assigned"}
+  
+  ## Code Changes (${commits.length} commits):
+  ${commits.map(c => `
+  ### Commit: ${c.message}
+  **Author:** ${c.author}
+  **Date:** ${c.date}
+  
+  \\\`diff
+  ${c.diff.substring(0, 3000)}
+  \\\`
+  `).join('\n')}
+  
+  Analyze the ticket and code changes. Respond in JSON ONLY, using this exact structure:
+  
+  {
+    "status": "in_progress",
+    "completion_percentage": 75,
+  
+    "client_view": {
+      "task_progress": "Clear, non-technical summary of what has been completed so far",
+      "remaining_work": "Non-technical explanation of what is left to do",
+      "eta": "Estimated delivery date or realistic timeframe",
+      "delivery_risk": {
+        "level": "low | medium | high",
+        "reason": "Explain the cause of this risk in simple business terms (e.g. dependency, missing info, scope uncertainty)"
+      },
+      "client_actions_required": ["Approvals, content, clarifications, or assets needed from the client"],
+      "notes": "Optional: important business context, expectations, or scope notes"
+    },
+  
+    "developer_view": {
+      "completed_work": ["Technical work completed"],
+      "in_progress": ["Tasks currently in development"],
+      "remaining_tasks": ["Remaining technical tasks"],
+      "code_quality": "Assessment of architecture, readability, testing, and maintainability",
+      "technical_blockers": ["Dependencies, bugs, or constraints that may delay delivery"],
+      "overall_assessment": "Short summary of engineering health and feasibility",
+      "recommendations": ["Specific next actions, refactor suggestions, or improvements"]
+    }
+  }
+  
+  Rules:
+  - Status must be: "just_started", "in_progress", or "completed"
+  - Client view must avoid technical terminology
+  - Developer view must contain technical reasoning and actionable details
+  - ETA must be realistic
+  - Delivery risk must ALWAYS include a reason
+  `;
   const message = await anthropic.messages.create({
     model: "claude-sonnet-4-20250514",
     max_tokens: 2000,

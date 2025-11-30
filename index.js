@@ -10,7 +10,9 @@ import googleRoutes from "./routes/googleRoutes.js";
 import bitbucketRoutes from "./routes/bitbucketRoutes.js";
 import branchRoutes from "./routes/bitBucketBranch.js";
 import webhookRoutes from "./routes/webhookRoutes.js";
-import requirementRoute from "./routes/requirementRoute.js"
+import requirementRoute from "./routes/requirementRoute.js";
+import devloperRoute from "./routes/developerRoutes.js";
+import testCaseRoutes from "./routes/testCaseRoutes.js";;
 dotenv.config();
 
 const app = express();
@@ -68,6 +70,18 @@ app.use("/api", webhookRoutes);
 
 app.use("/api",requirementRoute);
 
+
+// ===============================================
+// developer ROUTES
+// ===============================================
+
+app.use("/api",devloperRoute);
+
+// ===============================================
+// developer ROUTES
+// ===============================================
+
+app.use("/api", testCaseRoutes);
 // Start server
 app.listen(process.env.PORT || 3000, () => {
     console.log("API running on port " + (process.env.PORT || 3000));
